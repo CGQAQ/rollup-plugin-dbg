@@ -1,0 +1,32 @@
+{
+  "name": "vite-plugin-dbg",
+  "version": "1.0.0",
+  "main": "./dist/vite-plugin-dbg.umd.js",
+  "exports": {
+    ".": {
+      "require": "./dist/vite-plugin-dbg.umd.js",
+      "import": "./dist/vite-plugin-dbg.mjs"
+    }
+  },
+  "license": "MIT",
+  "author": {
+    "name": "CGQAQ",
+    "email": "m.jason.liu@outlook.com",
+    "url": "https://github.com/justjavac/deno_dbg/vite-plugin-dbg"
+  },
+  "keywords": [
+    "vite-plugin",
+    "rollup-plugin",
+    "vite-plugin-dbg"
+  ],
+  "scripts": {
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4",
+    "vite": "^3.0.6"
+  },
+  "dependencies": {
+    "chalk": "^5.0.1"
+  }
+}
