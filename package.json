@@ -1,23 +1,23 @@
 {
-  "name": "vite-plugin-dbg",
+  "name": "rollup-plugin-dbg",
   "version": "1.0.0",
-  "main": "./dist/vite-plugin-dbg.umd.js",
+  "main": "./dist/rollup-plugin-dbg.umd.js",
   "exports": {
     ".": {
-      "require": "./dist/vite-plugin-dbg.cjs",
-      "import": "./dist/vite-plugin-dbg.mjs"
+      "require": "./dist/rollup-plugin-dbg.cjs",
+      "import": "./dist/rollup-plugin-dbg.mjs"
     }
   },
   "license": "MIT",
   "author": {
     "name": "CGQAQ",
     "email": "m.jason.liu@outlook.com",
-    "url": "https://github.com/justjavac/deno_dbg/vite-plugin-dbg"
+    "url": "https://github.com/cgqaq/rollup-plugin-dbg"
   },
   "keywords": [
     "vite-plugin",
     "rollup-plugin",
-    "vite-plugin-dbg"
+    "rollup-plugin-dbg"
   ],
   "scripts": {
     "build": "rollup -c",
