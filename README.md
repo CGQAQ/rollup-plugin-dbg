@@ -34,7 +34,7 @@ import PluginDbg from "rollup-plugin-dbg";
 
 export default defineConfig({
   mode: "development",
-  plugins: [Dbg()], // do not need projectRoot when using with vite
+  plugins: [PluginDbg()], // do not need projectRoot when using with vite
   build: {
     outDir: "dist",
     lib: {
