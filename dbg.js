@@ -1,24 +1,25 @@
-const __safeEval = function (raw) {
+function __safeEval(raw) {
   const __eval = eval; /* bypass eval warnings */
-  function format(value, raw) {
-    const ty = typeof value;
-    if (ty === "symbol") {
-      return value.toString();
-    } else if (Array.isArray(value)) {
-      return `[${value.toString()}]`;
-    } else if (ty === "function") {
-      return raw;
-    }
-
-    return value;
-  }
 
   try {
-    return format(__eval(raw), raw);
+    return __eval(raw);
   } catch {
     return raw;
   }
-};
+}
+
+function __format(value, raw) {
+  const ty = typeof value;
+  if (ty === "symbol") {
+    return value.toString();
+  } else if (Array.isArray(value)) {
+    return `[${value.toString()}]`;
+  } else if (ty === "function") {
+    return raw;
+  }
+
+  return value;
+}
 
 function dbg(file, line, column, args) {
   function isBrowser() {
@@ -34,52 +35,88 @@ function dbg(file, line, column, args) {
   }
 
   function toPairs(arr) {
-    const _arr = arr;
+    const _arr = [...arr];
     const result = [];
     let tmp;
-    while ((tmp = [_arr.shift(), _arr.shift()]) && tmp[0] != undefined) {
+    while ((tmp = [_arr.shift(), _arr.shift()]) && tmp[1] != undefined) {
       result.push(tmp);
     }
     return result;
   }
 
+  let pairs = toPairs(args);
+
   if (isBrowser() || isDeno()) {
-    const styledOutput = toPairs(args).map(
-      ([val, raw]) => `%c<${typeof val}>%c${raw}%c = ${val}`
+    const styledOutput = pairs.map(
+      ([val, raw]) =>
+        `\t%c<${typeof val}>%c${raw}%c = %c${__format(val, raw)}%c`
     );
 
     const colors = styledOutput
-      .map((_) => ["color:blud", "color: white"])
+      .map((_) => [
+        "color:blue",
+        "color:purple",
+        "color:lightgray",
+        "color:green",
+        "color:lightgray",
+      ])
       .flat();
 
-    console.log(
-      `%c[${file}:${line}:${column}] %c[\n${styledOutput.join(",\n")}%c]`,
-      "color:gray",
-      "color:lightgray",
-      ...colors,
-      "color:lightgray"
-    );
+    if (styledOutput.length === 0) {
+      console.log(
+        `%c[${file}:${line}:${column}] %c[]`,
+        "color:gray",
+        "color:lightgray"
+      );
+    } else if (styledOutput.length === 1) {
+      const pair = styledOutput[0];
+      console.log(
+        `%c[${file}:${line}:${column}] %c[${pair.trimStart()}%c]`,
+        "color:gray",
+        "color:lightgray",
+        ...colors,
+        "color:lightgray"
+      );
+    } else {
+      console.log(
+        `%c[${file}:${line}:${column}] %c[\n${styledOutput.join(",\n")}%c\n]`,
+        "color:gray",
+        "color:lightgray",
+        ...colors,
+        "color:lightgray"
+      );
+    }
+
     return;
   } else if (isNode()) {
-    const ansiOutput = toPairs(args)
-      .map(([val, raw]) => {
-        return `\t\u001b[38;5;4m<${typeof val}>\u001b[m\u001b[38;5;5m${raw}\u001b[m = \u001b[38;5;14m${val}\u001b[m`;
-      })
-      .join(",\n");
-    let output = `\u001b[38;5;8m[${file}:${line}:${column}]\u001b[m []`;
+    const ansiOutput = pairs.map(([val, raw]) => {
+      return `\t\u001b[38;5;4m<${typeof val}>\u001b[m\u001b[38;5;5m${raw}\u001b[m = \u001b[38;5;14m${__format(
+        val,
+        raw
+      )}\u001b[m`;
+    });
+    let output = "";
     if (ansiOutput.length === 0) {
-      output;
+      output = `\u001b[38;5;8m[${file}:${line}:${column}]\u001b[m []`;
     } else if (ansiOutput.length === 1) {
-      output = `\u001b[38;5;8m[${file}:${line}:${column}]\u001b[m [${ansiOutput}]`;
+      const pair = ansiOutput[0];
+      output = `\u001b[38;5;8m[${file}:${line}:${column}]\u001b[m [${pair.trimStart()}]`;
     } else {
-      output = `\u001b[38;5;8m[${file}:${line}:${column}]\u001b[m [\n${ansiOutput}\n]`;
+      output = `\u001b[38;5;8m[${file}:${line}:${column}]\u001b[m [\n${ansiOutput.join(
+        ",\n"
+      )}\n]`;
     }
 
     console.log(output);
     return;
   }
 
-  console.log(`[${file}:${line}:${column}] [${s}]`);
+  // fallback NOCOLOR
+  console.log(
+    `[${file}:${line}:${column}] [${pairs.map(
+      ([val, raw]) => `<${typeof val}>${raw} = ${__format(val, raw)}`
+    )}]`
+  );
 }
 
 module.exports = dbg;

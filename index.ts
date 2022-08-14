@@ -33,7 +33,6 @@ export default function vitePluginDbg(config: DbgOptions) {
     },
 
     banner() {
-      console.log("####", injectedString);
       return injectedString;
     },
 
@@ -43,7 +42,6 @@ export default function vitePluginDbg(config: DbgOptions) {
           locations: true,
         });
         const m = new MagicString(src);
-        console.log("parser", this);
 
         simple(parsed, {
           CallExpression: (node) => {
@@ -77,5 +75,3 @@ export default function vitePluginDbg(config: DbgOptions) {
     },
   };
 }
-
-function inject() {}
