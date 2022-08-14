@@ -1,44 +1,14 @@
-import { parse } from "acorn";
 import { simple } from "acorn-walk";
 import MagicString from "magic-string";
-import path, { join } from "node:path";
-
-const safeEval = eval;
+import path, { resolve } from "node:path";
+import { readFileSync } from "node:fs";
 
 const fileRegex = /\.m?js$/;
 let base: string | null = null;
 
-function isBrowser(): boolean {
-  return typeof window === "object" && typeof document === "object";
-}
-
-function isNode(): boolean {
-  return typeof global === "object" && typeof require === "function";
-}
-
-declare const Deno: any;
-function isDeno(): boolean {
-  return typeof Deno === "object" && typeof Deno.version === "object";
-}
-
-function getInjectedString(
-  file: string,
-  line: number,
-  column: number,
-  args: string[]
-): string {
-  const relative = path.relative(base!, file);
-  console.log("###", relative, line, column, args);
-  if (isBrowser()) {
-  } else if (isNode()) {
-  } else if (isDeno()) {
-  }
-
-  const s = args.map((it) => `<${typeof safeEval(it)}>${it}`).join(", ");
-  const b = `;console.log(\`[${relative}:${line}:${column}] [${s}]\`);`;
-  console.log("b", b);
-  return b;
-}
+const injectedString = readFileSync(resolve(__dirname, "dbg.js"))
+  .toString()
+  .replace("module.exports = dbg;", "");
 
 export type DbgOptions = {
   projectRoot?: string;
@@ -62,10 +32,18 @@ export default function vitePluginDbg(config: DbgOptions) {
       }
     },
 
+    banner() {
+      console.log("####", injectedString);
+      return injectedString;
+    },
+
     transform(src, id) {
       if (fileRegex.test(id)) {
-        const parsed = parse(src, { ecmaVersion: "latest", locations: true });
+        const parsed = this.parse(src, {
+          locations: true,
+        });
         const m = new MagicString(src);
+        console.log("parser", this);
 
         simple(parsed, {
           CallExpression: (node) => {
@@ -74,17 +52,19 @@ export default function vitePluginDbg(config: DbgOptions) {
             const { name: funcName } = callee;
 
             if (funcName === "dbg") {
+              const relative = path.relative(base!, id);
+
+              const argPairs = [];
+              args.forEach((it) => {
+                const raw =
+                  it.raw || '"' + (src as string).slice(it.start, it.end) + '"';
+                argPairs.push(`__safeEval(${raw})`, raw);
+              });
+
               m.remove(start, end);
               m.appendRight(
                 start,
-                getInjectedString(
-                  id,
-                  startLine,
-                  startColumn,
-                  args.map(
-                    (it) => it.raw || (src as string).slice(it.start, it.end)
-                  )
-                )
+                `dbg("${relative}",${startLine},${startColumn},[${argPairs}])`
               );
             }
           },
