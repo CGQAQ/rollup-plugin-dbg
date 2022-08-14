@@ -6,6 +6,9 @@
     ".": {
       "require": "./dist/rollup-plugin-dbg.cjs",
       "import": "./dist/rollup-plugin-dbg.mjs"
+    },
+    "./typing.d.ts": {
+      "default": "./typing.d.ts"
     }
   },
   "license": "MIT",
@@ -25,7 +28,8 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c --watch",
-    "start": "cd examples && vite build"
+    "start-js-vite": "cd examples/js-vite && vite build",
+    "start-ts-vite": "cd examples/ts-vite && vite build"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.2",

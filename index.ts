@@ -3,7 +3,7 @@ import MagicString from "magic-string";
 import path, { resolve } from "node:path";
 import { readFileSync } from "node:fs";
 
-const fileRegex = /\.m?js$/;
+const fileRegex = /\.(m?js|ts)$/;
 let base: string | null = null;
 
 const injectedString = readFileSync(resolve(__dirname, "dbg.js"))
@@ -54,9 +54,15 @@ export default function vitePluginDbg(config: DbgOptions) {
 
               const argPairs = [];
               args.forEach((it) => {
-                const raw =
+                const rawQuoted: string =
                   it.raw || '"' + (src as string).slice(it.start, it.end) + '"';
-                argPairs.push(`__safeEval(${raw})`, raw);
+                const raw = rawQuoted.substring(1, rawQuoted.length - 1);
+
+                if (it.type === "Identifier") {
+                  argPairs.push(raw, rawQuoted);
+                } else {
+                  argPairs.push(`__safeEval(${rawQuoted})`, rawQuoted);
+                }
               });
 
               m.remove(start, end);

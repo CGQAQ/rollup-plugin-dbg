@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/dbg.run.js",
+      "program": "${workspaceFolder}/examples/js-vite/dist/rollup-plugin-dbg.mjs",
       "outFiles": ["${workspaceFolder}/**/*.js"]
     }
   ]

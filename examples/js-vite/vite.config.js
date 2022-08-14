@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import Dbg from "../";
+import Dbg from "../..";
 
 export default defineConfig({
   mode: "development",
