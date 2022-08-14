@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-dbg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./dist/rollup-plugin-dbg.umd.js",
   "exports": {
     ".": {
@@ -12,12 +12,15 @@
   "author": {
     "name": "CGQAQ",
     "email": "m.jason.liu@outlook.com",
-    "url": "https://github.com/cgqaq/rollup-plugin-dbg"
+    "url": "https://github.com/cgqaq"
+  },
+  "repository": {
+    "url": "https://github.com/CGQAQ/rollup-plugin-dbg"
   },
   "keywords": [
-    "vite-plugin",
     "rollup-plugin",
-    "rollup-plugin-dbg"
+    "rollup-plugin-dbg",
+    "vite-plugin"
   ],
   "scripts": {
     "build": "rollup -c",
