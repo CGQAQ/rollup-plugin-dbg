@@ -1,4 +1,4 @@
-# rollup-plugin-db
+# rollup-plugin-dbg
 
 ## This plugin is also compatible with vite
 
