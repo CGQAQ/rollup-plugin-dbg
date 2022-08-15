@@ -6,9 +6,14 @@ import { readFileSync } from "node:fs";
 const fileRegex = /\.(m?js|ts)$/;
 let base: string | null = null;
 
-const injectedString = readFileSync(resolve(__dirname, "dbg.js"))
-  .toString()
-  .replace("module.exports = dbg;", "");
+let content;
+try {
+  content = readFileSync(resolve(__dirname, "dbg.js"));
+} catch {
+  content = readFileSync(resolve(__dirname, "../", "dbg.js"));
+}
+
+const injectedString = content.toString().replace("module.exports = dbg;", "");
 
 export type DbgOptions = {
   projectRoot?: string;
