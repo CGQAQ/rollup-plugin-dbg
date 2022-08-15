@@ -63,14 +63,14 @@ function dbg(file, line, column, args) {
       .flat();
 
     if (styledOutput.length === 0) {
-      console.log(
+      console.debug(
         `%c[${file}:${line}:${column}] %c[]`,
         "color:gray",
         "color:lightgray"
       );
     } else if (styledOutput.length === 1) {
       const pair = styledOutput[0];
-      console.log(
+      console.debug(
         `%c[${file}:${line}:${column}] %c[${pair.trimStart()}%c]`,
         "color:gray",
         "color:lightgray",
@@ -78,7 +78,7 @@ function dbg(file, line, column, args) {
         "color:lightgray"
       );
     } else {
-      console.log(
+      console.debug(
         `%c[${file}:${line}:${column}] %c[\n${styledOutput.join(",\n")}%c\n]`,
         "color:gray",
         "color:lightgray",
@@ -107,12 +107,12 @@ function dbg(file, line, column, args) {
       )}\n]`;
     }
 
-    console.log(output);
+    console.debug(output);
     return;
   }
 
   // fallback NOCOLOR
-  console.log(
+  console.debug(
     `[${file}:${line}:${column}] [${pairs.map(
       ([val, raw]) => `<${typeof val}>${raw} = ${__format(val, raw)}`
     )}]`
