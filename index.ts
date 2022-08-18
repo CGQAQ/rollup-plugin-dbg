@@ -18,8 +18,7 @@ const injectedString = content.toString().replace("module.exports = dbg;", "");
 export type DbgOptions = {
   projectRoot?: string;
 };
-
-export default function vitePluginDbg(config: DbgOptions) {
+export default function vitePluginDbg(config?: DbgOptions) {
   const { projectRoot } = config || {};
 
   if (typeof projectRoot === "string") {
